@@ -17,6 +17,8 @@
 package com.ipaulpro.afilechooserexample;
 
 import java.io.File;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -37,7 +39,7 @@ import com.ipaulpro.afilechooser.utils.FileUtils;
 public class FileChooserExampleActivity extends Activity {
 
 	private static final int REQUEST_CODE = 6384; // onActivityResult request code
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,6 +59,30 @@ public class FileChooserExampleActivity extends Activity {
 	}
 	
 	private void showChooser() {
+		new Thread(){
+
+			@Override
+			public void run() {
+				try {
+					URL new_url = new URL("http://localhost:" +SocketServer.port + "/tb/test?hello=2&and=2");
+					HttpURLConnection conn = (HttpURLConnection) new_url.openConnection();   
+
+					conn.setDoInput(true) ;
+					conn.setDoOutput(true) ;
+					conn.setConnectTimeout(30000) ;
+					conn.connect() ;
+					String r = conn.getResponseMessage() ;
+					 
+					Log.e("test_ss", "client msg recv:" + r) ;
+					 
+				} catch (Exception e1) {
+					Log.e("test_ss", "client exception", e1) ;
+				} 
+			}
+			
+		}.start() ;
+		
+		
 		// Use the GET_CONTENT intent from the utility class
 		Intent target = FileUtils.createGetContentIntent(FileUtils.MIME_TYPE_ZIP);
 		// Create the chooser Intent
@@ -92,5 +118,10 @@ public class FileChooserExampleActivity extends Activity {
 			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 	}
 }
