@@ -58,7 +58,7 @@ public class FileChooserExampleActivity extends Activity {
 	
 	private void showChooser() {
 		// Use the GET_CONTENT intent from the utility class
-		Intent target = FileUtils.createGetContentIntent();
+		Intent target = FileUtils.createGetContentIntent(FileUtils.MIME_TYPE_ZIP);
 		// Create the chooser Intent
 		Intent intent = Intent.createChooser(
 				target, getString(R.string.chooser_title));
